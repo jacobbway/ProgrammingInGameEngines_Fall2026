@@ -2,7 +2,7 @@
 .vs/
 
 # Compiled Object files
-*.slo
+*..slo
 *.lo
 *.o
 *.obj
@@ -82,8 +82,8 @@ DerivedDataCache/*
 **/Build/
 
 # Ignore large debug and cache files
-*.pdb
-*.bin
-*.ucas
-*.utoc
-*.ushaderbytecode
+**.pdb
+**.bin
+**.ucas
+**.utoc
+**.ushaderbytecode
