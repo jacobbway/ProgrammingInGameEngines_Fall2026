@@ -4,6 +4,8 @@
 #include "CollectibleSword.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "CharacterClasses/BootManPlayerState.h"
 
 // Sets default values
 ACollectibleSword::ACollectibleSword()
@@ -18,7 +20,6 @@ ACollectibleSword::ACollectibleSword()
     CapsuleCollider->SetupAttachment(RootComponent);
 
     CapsuleCollider->InitCapsuleSize(20.f, 60.f);
-
 }
 
 // Called when the game starts or when spawned
@@ -32,14 +33,23 @@ void ACollectibleSword::BeginPlay()
 
 void ACollectibleSword::OnSwordOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("ON SWORD OVERLAP"))
-
+    if (OtherActor && OtherActor != this)
+    {
+        if (APawn* PlayerPawn = Cast<APawn>(OtherActor))
+        {
+            if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Player successfully collected the sword!"))
+                    BootState->AddToNumSwords(1);
+                Destroy();
+            }
+        }
+    }
 }
 
 // Called every frame
 void ACollectibleSword::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 

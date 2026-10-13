@@ -25,19 +25,6 @@ public class OpenWorldMap : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"OpenWorldMap",
-			"OpenWorldMap/Variant_Platforming",
-			"OpenWorldMap/Variant_Platforming/Animation",
-			"OpenWorldMap/Variant_Combat",
-			"OpenWorldMap/Variant_Combat/AI",
-			"OpenWorldMap/Variant_Combat/Animation",
-			"OpenWorldMap/Variant_Combat/Gameplay",
-			"OpenWorldMap/Variant_Combat/Interfaces",
-			"OpenWorldMap/Variant_Combat/UI",
-			"OpenWorldMap/Variant_SideScrolling",
-			"OpenWorldMap/Variant_SideScrolling/AI",
-			"OpenWorldMap/Variant_SideScrolling/Gameplay",
-			"OpenWorldMap/Variant_SideScrolling/Interfaces",
-			"OpenWorldMap/Variant_SideScrolling/UI"
 		});
 
 		// Uncomment if you are using Slate UI
