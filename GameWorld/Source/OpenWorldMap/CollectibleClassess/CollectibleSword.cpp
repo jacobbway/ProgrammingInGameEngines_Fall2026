@@ -26,7 +26,7 @@ ACollectibleSword::ACollectibleSword()
 void ACollectibleSword::BeginPlay()
 {
 	Super::BeginPlay();
-    GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("Sword begin play"));
+    //GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("Sword begin play"));
 
     CapsuleCollider->OnComponentBeginOverlap.AddDynamic(this, &ACollectibleSword::OnSwordOverlap);
 }

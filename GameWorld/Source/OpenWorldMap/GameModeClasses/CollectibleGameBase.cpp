@@ -16,7 +16,7 @@ ACollectibleGameBase::ACollectibleGameBase()
 void ACollectibleGameBase::BeginPlay()
 {
 	Super::BeginPlay();
-	GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Yellow, TEXT("Game Base Called Begin Play"));
+	//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Yellow, TEXT("Game Base Called Begin Play"));
 
 	TArray<AActor*> NumberOfSwords;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACollectibleSword::StaticClass(), NumberOfSwords);

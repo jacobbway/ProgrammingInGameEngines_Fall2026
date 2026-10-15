@@ -26,7 +26,7 @@ ASwordDepositChest::ASwordDepositChest()
 void ASwordDepositChest::BeginPlay()
 {
 	Super::BeginPlay();
-	GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("CHEST begin play"));
+	//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("CHEST begin play"));
 
 	DepositArea->OnComponentBeginOverlap.AddDynamic(this, &ASwordDepositChest::OnChestOverlap);
 
