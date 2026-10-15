@@ -41,10 +41,12 @@ void ASwordDepositChest::OnChestOverlap(UPrimitiveComponent* OverlappedComponent
         {
             if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
             {
-                UE_LOG(LogTemp, Warning, TEXT("Player successfully touched the chest!"));
+                if (GoldBeacon->IsActive())
+                {
                 BootState->ResetSwords();
                 SetBeaconActive(false);
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("All Swords Deposited!"));
+                }
             }
         }
     }
