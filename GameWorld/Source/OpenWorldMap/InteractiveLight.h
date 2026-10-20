@@ -11,13 +11,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLightStateChange, bool, IsLightOn
 class USceneComponent;
 class USpotLightComponent;
 class UCapsuleComponent;
+class LightState;
 
 UCLASS()
 class OPENWORLDMAP_API AInteractiveLight : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AInteractiveLight();
 
@@ -30,7 +31,16 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep,
 		const FHitResult& SweepResult);
 
-public:	
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	bool IsPlayerNear;
+	bool IsLightOn;
+	float TimeInState;
+	LightState* CurrentState;
+
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light Component")
 	USceneComponent* LightRoot;
 
@@ -39,11 +49,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light Component")
 	UCapsuleComponent* TriggerZone;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light State")
-	bool IsLightOn;
+	
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnLightStateChange OnLightStateChange;
 
+	UFUNCTION()
+	bool GetIsPlayerNear() { return IsPlayerNear; }
+
+	UFUNCTION()
+	bool GetIsLightOn() { return IsLightOn; }
+
+	UFUNCTION()
+	void SetIsLightOn(bool NewOn);
 };

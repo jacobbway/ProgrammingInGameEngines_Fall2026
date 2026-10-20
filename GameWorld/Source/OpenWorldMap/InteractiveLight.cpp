@@ -29,6 +29,9 @@ AInteractiveLight::AInteractiveLight()
 
 	// set light to off
 	IsLightOn = false;
+
+	// player isnt near at start
+	IsPlayerNear = false;
 }
 
 // Called when the game starts or when spawned
@@ -47,6 +50,8 @@ void AInteractiveLight::BeginPlay()
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Yellow, TEXT("Trigger is real"));
 		TriggerZone->OnComponentBeginOverlap.AddDynamic(this, &AInteractiveLight::OnOverlapBegin);
+		TriggerZone->OnComponentEndOverlap.AddDynamic(this, &AInteractiveLight::OnOverlapEnd);
+
 	}
 }
 
@@ -63,6 +68,7 @@ void AInteractiveLight::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
 			{
 				IsLightOn = !IsLightOn;
+				IsPlayerNear = true;
 
 				//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("Set Light On"));
 				SpotLight->SetVisibility(IsLightOn);
@@ -71,5 +77,28 @@ void AInteractiveLight::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			}
 		}
 	}
+}
+
+void AInteractiveLight::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("In End Over Lap"));
+	if (OtherActor && OtherActor != this)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("in other actor"));
+		if (APawn* PlayerPawn = Cast<APawn>(OtherActor))
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("In Pawn"));
+			if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
+			{
+				IsPlayerNear = false;
+			}
+		}
+	}
+}
+
+void AInteractiveLight::SetIsLightOn(bool NewOn)
+{
+	IsLightOn = NewOn;
+	SpotLight->SetVisibility(IsLightOn);
 }
 
