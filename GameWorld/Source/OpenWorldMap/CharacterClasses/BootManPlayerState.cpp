@@ -2,17 +2,10 @@
 
 
 #include "BootManPlayerState.h"
+#include "BootManInventory.h"
 
 ABootManPlayerState::ABootManPlayerState()
 {
-	CollectedSwords = 0;
-	OnCollected.Broadcast(this, 0, CollectedSwords);
+	PlayerInventory = CreateDefaultSubobject<UBootManInventory>(TEXT("BootManInventory"));
 }
 
-void ABootManPlayerState::AddToNumSwords(int32 Swords)
-{
-	int32 OldSwords = CollectedSwords;
-	CollectedSwords += Swords;
-	UE_LOG(LogTemp, Warning, TEXT("SWORDS UPDATED %d"), CollectedSwords)
-	OnCollected.Broadcast(this, OldSwords, CollectedSwords);
-}

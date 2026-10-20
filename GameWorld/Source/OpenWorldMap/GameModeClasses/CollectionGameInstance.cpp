@@ -5,6 +5,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "CharacterClasses/BootCharacter.h"
 #include "MonsterClasses/StalkingMonster.h"
+#include "InteractiveClasses/InteractiveLight.h"
 
 void UCollectionGameInstance::OnStart()
 {
@@ -56,22 +57,51 @@ void UCollectionGameInstance::AddLight(AInteractiveLight* Light)
 	if (Light)
 	{
 		Lights.Add(Light);
+		Light->OnLightStateChange.AddDynamic(this, &UCollectionGameInstance::HandleLightStateChanged);
 	}
 }
 
 void UCollectionGameInstance::SetAllLightState(bool IsOn)
 {
+	for(AInteractiveLight* Light : Lights)
+	{
+		if (Light)
+		{
+			Light;
+		}
+	}
 }
 
-bool UCollectionGameInstance::AreAllLightsInState(bool IsOn)
+bool UCollectionGameInstance::AreAllLightsOn()
 {
-	return false;
+	bool AllOn = true;
+	for (AInteractiveLight* CurLight : Lights)
+	{
+		if (!CurLight->IsLightOn)
+			AllOn = false;
+	}
+	return AllOn;
 }
 
 void UCollectionGameInstance::DestroyAllSnails()
 {
+	for (AStalkingMonster* CurSnail : Snails)
+	{
+		if (CurSnail)
+		{
+			CurSnail->Destroy();
+		}
+	}
+	Snails.Empty();
 }
 
 void UCollectionGameInstance::HandleLightStateChanged(bool IsOn)
 {
+	if (IsOn)
+	{
+		if (AreAllLightsOn())
+		{
+			DestroyAllSnails();
+		}
+	}
 }

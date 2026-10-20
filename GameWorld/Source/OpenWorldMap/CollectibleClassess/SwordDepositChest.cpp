@@ -3,8 +3,10 @@
 
 #include "SwordDepositChest.h"
 #include "Kismet/GameplayStatics.h"
-#include "CharacterClasses/BootManPlayerState.h"
+#include "CharacterClasses/BootCharacter.h"
 #include "Components/BoxComponent.h"
+#include "CollectibleClassess/CollectibleSword.h"
+#include "CharacterClasses/BootManInventory.h"
 
 // Sets default values
 ASwordDepositChest::ASwordDepositChest()
@@ -26,11 +28,24 @@ ASwordDepositChest::ASwordDepositChest()
 void ASwordDepositChest::BeginPlay()
 {
 	Super::BeginPlay();
-	//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("CHEST begin play"));
 
 	DepositArea->OnComponentBeginOverlap.AddDynamic(this, &ASwordDepositChest::OnChestOverlap);
 
+    TArray<AActor*> FoundSwords;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACollectibleSword::StaticClass(), FoundSwords);
+
+	NumSwordsInLevel = FoundSwords.Num();
 	SetBeaconActive(false);
+
+	UE_LOG(LogTemp, Warning, TEXT("Number of swords in level: %d"), NumSwordsInLevel)
+
+    if (ABootCharacter* Player = Cast<ABootCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+    {
+        if (UBootManInventory* CharInventory = Player->GetInventory())
+        {
+            CharInventory->OnSwordNumberChanged.AddDynamic(this, &ASwordDepositChest::CheckIfAllSwordsCollected);
+        }
+    }
 }
 
 void ASwordDepositChest::OnChestOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
@@ -39,16 +54,25 @@ void ASwordDepositChest::OnChestOverlap(UPrimitiveComponent* OverlappedComponent
     {
         if (APawn* PlayerPawn = Cast<APawn>(OtherActor))
         {
-            if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
+            if (ABootCharacter* BootCharacter = Cast<ABootCharacter>(PlayerPawn))
             {
-                if (GoldBeacon->IsActive())
+                if (BootCharacter->GetInventory()->GetNumberOfSwords() == NumSwordsInLevel)
                 {
-                BootState->ResetSwords();
-                SetBeaconActive(false);
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("All Swords Deposited!"));
+					UE_LOG(LogTemp, Warning, TEXT("All swords deposited: %d"), BootCharacter->GetInventory()->GetNumberOfSwords());
+                    SetBeaconActive(false);
+					BootCharacter->GetInventory()->RemoveAllSwords();
                 }
             }
         }
+    }
+}
+
+void ASwordDepositChest::CheckIfAllSwordsCollected(int32 NumberOfSwords)
+{
+    if (NumberOfSwords == NumSwordsInLevel)
+    {
+        SetBeaconActive(true);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("All swords collected!"));
     }
 }
 

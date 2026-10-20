@@ -5,7 +5,10 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "CharacterClasses/BootManPlayerState.h"
+#include "CharacterClasses/BootCharacter.h"
+#include "CharacterClasses/BootManInventory.h"
+
+static int32 GlobalSwordId = 1;
 
 // Sets default values
 ACollectibleSword::ACollectibleSword()
@@ -29,19 +32,25 @@ void ACollectibleSword::BeginPlay()
     //GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("Sword begin play"));
 
     CapsuleCollider->OnComponentBeginOverlap.AddDynamic(this, &ACollectibleSword::OnSwordOverlap);
+
+    if (SwordStats.SwordID == 0)
+    {
+        SwordStats.SwordID = GlobalSwordId;
+        GlobalSwordId++;
+    }
 }
 
 void ACollectibleSword::OnSwordOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
 {
     if (OtherActor && OtherActor != this)
     {
-        if (APawn* PlayerPawn = Cast<APawn>(OtherActor))
+        if (ABootCharacter* PlayerCharacter = Cast<ABootCharacter>(OtherActor))
         {
-            if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
+            if (UBootManInventory* CharInventory = PlayerCharacter->GetInventory())
             {
-                UE_LOG(LogTemp, Warning, TEXT("Player successfully collected the sword!"))
-                    BootState->AddToNumSwords(1);
-                Destroy();
+				UE_LOG(LogTemp, Log, TEXT("Player Collected Sword: %d"), SwordStats.SwordID);
+                CharInventory->AddSword(SwordStats);
+				Destroy();
             }
         }
     }
