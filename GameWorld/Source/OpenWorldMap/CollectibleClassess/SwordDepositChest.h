@@ -9,6 +9,9 @@
 class StaticMeshComponent;
 class UBoxComponent;
 class UStaticMeshComponent;
+class UCollectibleSword;
+class UBootManInventory;
+class ABootCharacter;
 
 UCLASS()
 class OPENWORLDMAP_API ASwordDepositChest : public AActor
@@ -42,4 +45,9 @@ protected:
 	void OnChestOverlap(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult);
+
+private:
+		int32 NumSwordsInLevel;
+		UFUNCTION()
+		void CheckIfAllSwordsCollected(int32 NumberOfSwords);
 };

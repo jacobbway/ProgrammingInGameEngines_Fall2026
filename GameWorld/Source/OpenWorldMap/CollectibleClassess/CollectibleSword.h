@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SwordModel.h"
 #include "GameFramework/Actor.h"
 #include "CollectibleSword.generated.h"
 
 class UCapsuleComponent;
 class USceneComponent;
+class ABootCharacter;
+class ABootManInventory;
 
 UCLASS()
 class OPENWORLDMAP_API ACollectibleSword : public AActor
@@ -27,6 +30,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
 	UCapsuleComponent* CapsuleCollider;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sword Properties")
+	FSwordModel SwordStats;
 
 	UFUNCTION()
 	void OnSwordOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

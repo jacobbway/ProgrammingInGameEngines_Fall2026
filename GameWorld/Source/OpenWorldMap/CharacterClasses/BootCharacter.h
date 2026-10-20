@@ -11,6 +11,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UBootManInventory;
 
 UCLASS()
 class OPENWORLDMAP_API ABootCharacter : public ACharacter
@@ -65,4 +66,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float AirControl = 0.75f;
+
+	UFUNCTION()
+	UBootManInventory* GetInventory() const { return Inventory; }
+
+private:
+	UPROPERTY()
+	UBootManInventory* Inventory;
 };

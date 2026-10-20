@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/LocalPlayer.h"
+#include "CharacterClasses/BootManInventory.h"
 
 // Sets default values
 ABootCharacter::ABootCharacter()
@@ -30,6 +31,7 @@ ABootCharacter::ABootCharacter()
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); 
     FollowCamera->bUsePawnControlRotation = false; 
 
+	Inventory = CreateDefaultSubobject<UBootManInventory>(TEXT("BootManInventory"));
 }
 
 void ABootCharacter::BeginPlay()

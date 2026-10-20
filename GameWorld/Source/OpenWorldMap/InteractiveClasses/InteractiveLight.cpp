@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameModeClasses/CollectionGameInstance.h"
 #include "GameFramework/Character.h"
 #include "CharacterClasses/BootManPlayerState.h"
 
@@ -47,6 +48,12 @@ void AInteractiveLight::BeginPlay()
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Yellow, TEXT("Trigger is real"));
 		TriggerZone->OnComponentBeginOverlap.AddDynamic(this, &AInteractiveLight::OnOverlapBegin);
+	}
+
+	UCollectionGameInstance* GameInstance = GetWorld()->GetGameInstance<UCollectionGameInstance>();
+	if (GameInstance)
+	{
+		GameInstance->AddLight(this);
 	}
 }
 

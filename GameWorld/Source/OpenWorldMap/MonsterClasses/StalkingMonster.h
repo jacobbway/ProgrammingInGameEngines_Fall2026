@@ -8,6 +8,7 @@
 
 class UArrowComponent;
 class USphereComponent;
+class UCollectionGameInstance;
 
 UCLASS()
 class OPENWORLDMAP_API AStalkingMonster : public APawn

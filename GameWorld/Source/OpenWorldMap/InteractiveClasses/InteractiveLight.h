@@ -46,4 +46,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnLightStateChange OnLightStateChange;
 
+	UFUNCTION()
+	void ToggleLightState(bool NewState) { IsLightOn = NewState; }
 };

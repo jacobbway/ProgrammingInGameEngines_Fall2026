@@ -12,7 +12,7 @@ AStalkingMonster::AStalkingMonster()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	UE_LOG(LogTemp, Warning, TEXT("Stalker Created"))
+	//UE_LOG(LogTemp, Warning, TEXT("Stalker Created"))
 
 	SnailRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SnailRoot"));
 	RootComponent = SnailRoot;
@@ -31,6 +31,13 @@ void AStalkingMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Snail Begin Play"));
+
+	UCollectionGameInstance* GameInstance = GetWorld()->GetGameInstance<UCollectionGameInstance>();
+	if (GameInstance)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Snail Added to Game Instance"));
+		GameInstance->AddSnail(this);
+	}
 }
 
 // Called every frame
@@ -46,12 +53,12 @@ void AStalkingMonster::Tick(float DeltaTime)
 
 bool AStalkingMonster::IsPlayerLooking()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING"))
+	//UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING"))
 	APlayerController* BootController = GetWorld()->GetFirstPlayerController();
 	
 	if (BootController && BootController->PlayerCameraManager)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING BOOT CONTROLLER"))
+		//UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING BOOT CONTROLLER"))
 		FVector BootCamera = BootController->PlayerCameraManager->GetCameraLocation();
 		FVector BootForward = BootController->PlayerCameraManager->GetCameraRotation().Vector();
 
@@ -61,7 +68,7 @@ bool AStalkingMonster::IsPlayerLooking()
 		
 		if (DotResult >= PlayerFOV)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING YES LOOKING"))
+			//UE_LOG(LogTemp, Warning, TEXT("ENTERED IS PLAYER LOOKING YES LOOKING"))
 			return true;
 		}
 	}
@@ -74,7 +81,7 @@ bool AStalkingMonster::IsPlayerLooking()
 
 void AStalkingMonster::RotateToPlayer(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ROTATING TO PLAYER"))
+	//UE_LOG(LogTemp, Warning, TEXT("ROTATING TO PLAYER"))
 
 	FVector StartPos = this->GetActorLocation();
 
@@ -102,7 +109,7 @@ void AStalkingMonster::RotateToPlayer(float DeltaTime)
 	float Angle = FMath::RadiansToDegrees(FMath::Acos(Dot));
 	float AngleToTurn = FMath::ClampAngle(TurnSpeed * DeltaTime, 0.0f, Angle);
 
-	UE_LOG(LogTemp, Warning, TEXT("Turn Angle: %3.2f Angle: %3.2f"), TurnSpeed * DeltaTime, Angle)
+	//UE_LOG(LogTemp, Warning, TEXT("Turn Angle: %3.2f Angle: %3.2f"), TurnSpeed * DeltaTime, Angle)
 
 	FVector Cross = Forward.Cross(ToPlayer);
 	if (Cross.Z < 0)

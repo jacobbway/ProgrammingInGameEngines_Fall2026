@@ -9,6 +9,8 @@
 class ABootCharacter;
 class AStalkingMonster;
 class AInteractiveLight;
+class ACollectibleSword;
+class UCollectionGameInstance;
 
 /**
  * 
@@ -34,7 +36,7 @@ public:
 	void AddSnail(AStalkingMonster* Snail);
 	void AddLight(AInteractiveLight* Light);
 	void SetAllLightState(bool IsOn);
-	bool AreAllLightsInState(bool IsOn);
+	bool AreAllLightsOn();
 	void DestroyAllSnails();
 
 	UFUNCTION()
