@@ -6,6 +6,7 @@
 #include "CharacterClasses/BootCharacter.h"
 #include "MonsterClasses/StalkingMonster.h"
 #include "InteractiveClasses/InteractiveLight.h"
+#include "CollectionGameInstance.h"
 
 void UCollectionGameInstance::OnStart()
 {
@@ -67,7 +68,7 @@ void UCollectionGameInstance::SetAllLightState(bool IsOn)
 	{
 		if (Light)
 		{
-			Light;
+			Light->SetIsLightOn(IsOn);
 		}
 	}
 }
@@ -77,7 +78,7 @@ bool UCollectionGameInstance::AreAllLightsOn()
 	bool AllOn = true;
 	for (AInteractiveLight* CurLight : Lights)
 	{
-		if (!CurLight->IsLightOn)
+		if (!CurLight->GetIsLightOn())
 			AllOn = false;
 	}
 	return AllOn;

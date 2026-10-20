@@ -8,11 +8,12 @@
 #include "GameModeClasses/CollectionGameInstance.h"
 #include "GameFramework/Character.h"
 #include "CharacterClasses/BootManPlayerState.h"
+#include "LightState.h"
 
 // Sets default values
 AInteractiveLight::AInteractiveLight()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// did this in sword
 	LightRoot = CreateDefaultSubobject<USceneComponent>(TEXT("LightRoot"));
@@ -35,6 +36,25 @@ AInteractiveLight::AInteractiveLight()
 	IsPlayerNear = false;
 }
 
+void AInteractiveLight::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	TimeInState += DeltaTime;
+	
+	bool AllLightsOn = GameInstance ? GameInstance->AreAllLightsOn() : false;
+
+	CurrentState->InState(this, DeltaTime, TimeInState, AllLightsOn, IsPlayerNear);
+
+	LightState* NextState = CurrentState->NextState(this, DeltaTime, TimeInState, AllLightsOn, IsPlayerNear);
+
+	if (NextState && NextState != CurrentState)
+	{
+		CurrentState = NextState;
+		TimeInState = 0.0f;
+	}
+}
+
 // Called when the game starts or when spawned
 void AInteractiveLight::BeginPlay()
 {
@@ -55,11 +75,16 @@ void AInteractiveLight::BeginPlay()
 
 	}
 
-	UCollectionGameInstance* GameInstance = GetWorld()->GetGameInstance<UCollectionGameInstance>();
+	GameInstance = GetWorld()->GetGameInstanceChecked<UCollectionGameInstance>();
 	if (GameInstance)
 	{
 		GameInstance->AddLight(this);
 	}
+
+	CurrentState = OffLightState::GetInstance();
+	TimeInState = 0.0f;
+
+	CurrentState->InState(this, 0.0f, TimeInState, false, IsPlayerNear);
 }
 
 void AInteractiveLight::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
@@ -74,13 +99,7 @@ void AInteractiveLight::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("In Pawn"));
 			if (ABootManPlayerState* BootState = PlayerPawn->GetPlayerState<ABootManPlayerState>())
 			{
-				IsLightOn = !IsLightOn;
 				IsPlayerNear = true;
-
-				//GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Magenta, TEXT("Set Light On"));
-				SpotLight->SetVisibility(IsLightOn);
-				// Broadcast the new state via our delegate
-				OnLightStateChange.Broadcast(IsLightOn);
 			}
 		}
 	}
@@ -107,5 +126,29 @@ void AInteractiveLight::SetIsLightOn(bool NewOn)
 {
 	IsLightOn = NewOn;
 	SpotLight->SetVisibility(IsLightOn);
+	OnLightStateChange.Broadcast(IsLightOn);
+}
+
+void AInteractiveLight::FadeLight(float CurrentTimeInState)
+{
+	if (FadeDuration > 0.0f)
+	{
+		float RemainingTime = FadeDuration - CurrentTimeInState;
+
+		if (RemainingTime < 0.0f)
+		{
+			RemainingTime = 0.0f;
+		}
+
+		float Alpha = RemainingTime / FadeDuration;
+		float TargetIntensity = Alpha * LightMaxIntensity;
+
+		SetSpotLightIntensity(TargetIntensity);
+	}
+}
+
+void AInteractiveLight::SetSpotLightIntensity(float Intensity)
+{
+	SpotLight->SetIntensity(Intensity);
 }
 

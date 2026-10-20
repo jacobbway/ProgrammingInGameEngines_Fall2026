@@ -15,6 +15,8 @@ protected:
 	LightState();
 	virtual ~LightState();
 
+	float LightTime = 15.0f;
+
 public:
 	virtual void InState(AInteractiveLight* Light, float DeltaTime, float TimeInState,
 		bool AllLightsOn, bool IsPlayerNear) = 0;

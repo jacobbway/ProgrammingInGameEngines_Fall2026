@@ -15,7 +15,8 @@ LightState::~LightState()
 // OFF LIGHT STATE
 void OffLightState::InState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
-	// Do Nothing Stay Off
+	if (Light->GetIsLightOn())
+		Light->SetIsLightOn(false);
 }
 
 LightState* OffLightState::NextState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
@@ -36,16 +37,19 @@ OffLightState* OffLightState::GetInstance()
 void OnNearLightState::InState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
 	if (!Light->GetIsLightOn())
+	{
 		Light->SetIsLightOn(true);
+	}
+	Light->SetSpotLightIntensity(Light->LightMaxIntensity);
 }
 
 LightState* OnNearLightState::NextState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
-	if()
+	if (Light->GameInstance->AreAllLightsOn())
+		return AlwaysOnLightState::GetInstance();
 
 	if (!Light->GetIsPlayerNear())
 		return OnLightState::GetInstance();
-
 
 	return this;
 }
@@ -59,10 +63,21 @@ OnNearLightState* OnNearLightState::GetInstance()
 // ON LIGHT STATE
 void OnLightState::InState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	Light->SetSpotLightIntensity(Light->LightMaxIntensity);
 }
 
 LightState* OnLightState::NextState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	if (Light->GameInstance->AreAllLightsOn())
+		return AlwaysOnLightState::GetInstance();
+
+	if (Light->GetIsPlayerNear())
+		return OnNearLightState::GetInstance();
+
+	if (TimeInState >= LightTime)
+		return FadingLightState::GetInstance();
+
+	return this;
 }
 
 OnLightState* OnLightState::GetInstance()
@@ -74,10 +89,22 @@ OnLightState* OnLightState::GetInstance()
 // FADING LIGHT STATE
 void FadingLightState::InState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	Light->FadeLight(TimeInState);
 }
 
 LightState* FadingLightState::NextState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	if (Light->GameInstance->AreAllLightsOn())
+	{
+		return AlwaysOnLightState::GetInstance();
+	}
+
+	if (Light->GetIsPlayerNear())
+	{
+		return OnNearLightState::GetInstance();
+	}
+
+	return this;
 }
 
 FadingLightState* FadingLightState::GetInstance()
@@ -89,10 +116,13 @@ FadingLightState* FadingLightState::GetInstance()
 // ALWAYS ON STATE
 void AlwaysOnLightState::InState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	Light->SetSpotLightIntensity(Light->LightMaxIntensity);
 }
 
 LightState* AlwaysOnLightState::NextState(AInteractiveLight* Light, float DeltaTime, float TimeInState, bool AllLightsOn, bool IsPlayerNear)
 {
+	// stay here forever because they are all on
+	return this;
 }
 
 AlwaysOnLightState* AlwaysOnLightState::GetInstance()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameModeClasses/CollectionGameInstance.h"
 #include "InteractiveLight.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLightStateChange, bool, IsLightOn);
@@ -21,6 +22,10 @@ class OPENWORLDMAP_API AInteractiveLight : public AActor
 public:
 	// Sets default values for this actor's properties
 	AInteractiveLight();
+	float LightMaxIntensity = 10000.0f;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,4 +67,15 @@ public:
 
 	UFUNCTION()
 	void SetIsLightOn(bool NewOn);
+
+	UFUNCTION()
+	void FadeLight(float CurrentTimeInState);
+
+	UPROPERTY()
+	UCollectionGameInstance* GameInstance;
+
+	UFUNCTION()
+	void SetSpotLightIntensity(float Intensity);
+
+	float FadeDuration = 5.0f;
 };
