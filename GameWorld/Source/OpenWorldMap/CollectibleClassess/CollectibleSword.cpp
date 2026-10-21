@@ -8,7 +8,7 @@
 #include "CharacterClasses/BootCharacter.h"
 #include "CharacterClasses/BootManInventory.h"
 
-static int32 GlobalSwordId = 1;
+static int32 GlobalSwordId = 1; // better in game instance
 
 // Sets default values
 ACollectibleSword::ACollectibleSword()

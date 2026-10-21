@@ -15,7 +15,7 @@ protected:
 	LightState();
 	virtual ~LightState();
 
-	float LightTime = 15.0f;
+	float LightTime = 5.0f; //make const
 
 public:
 	virtual void InState(AInteractiveLight* Light, float DeltaTime, float TimeInState,

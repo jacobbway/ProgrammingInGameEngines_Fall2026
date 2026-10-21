@@ -6,7 +6,6 @@
 #include "CharacterClasses/BootCharacter.h"
 #include "MonsterClasses/StalkingMonster.h"
 #include "InteractiveClasses/InteractiveLight.h"
-#include "CollectionGameInstance.h"
 
 void UCollectionGameInstance::OnStart()
 {

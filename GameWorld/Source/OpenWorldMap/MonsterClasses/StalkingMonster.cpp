@@ -64,7 +64,7 @@ bool AStalkingMonster::IsPlayerLooking()
 
 		FVector DirectionToBoot = (GetActorLocation() - BootCamera).GetSafeNormal();
 
-		float DotResult = FVector::DotProduct(BootForward, DirectionToBoot);
+		float DotResult = FVector::DotProduct(BootForward, DirectionToBoot); // should convert to degrees
 		
 		if (DotResult >= PlayerFOV)
 		{

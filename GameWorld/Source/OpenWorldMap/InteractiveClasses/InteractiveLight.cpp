@@ -33,7 +33,7 @@ AInteractiveLight::AInteractiveLight()
 	IsLightOn = false;
 
 	// player isnt near at start
-	IsPlayerNear = false;
+	IsPlayerNear = false; // begin play
 }
 
 void AInteractiveLight::Tick(float DeltaTime)
@@ -150,5 +150,7 @@ void AInteractiveLight::FadeLight(float CurrentTimeInState)
 void AInteractiveLight::SetSpotLightIntensity(float Intensity)
 {
 	SpotLight->SetIntensity(Intensity);
+	if(Intensity < 3.0f)
+		SetIsLightOn(false);
 }
 

@@ -8,6 +8,8 @@
 
 class UBootManInventory;
 
+// needs getter and setter for inventory
+
 /**
  * 
  */

@@ -72,7 +72,7 @@ public:
 	void FadeLight(float CurrentTimeInState);
 
 	UPROPERTY()
-	UCollectionGameInstance* GameInstance;
+	UCollectionGameInstance* GameInstance; // should be private
 
 	UFUNCTION()
 	void SetSpotLightIntensity(float Intensity);

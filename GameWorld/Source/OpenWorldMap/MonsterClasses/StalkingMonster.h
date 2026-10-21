@@ -16,7 +16,7 @@ class OPENWORLDMAP_API AStalkingMonster : public APawn
 	GENERATED_BODY()
 
 private:
-	float PlayerFOV = 0.8f;
+	float PlayerFOV = 0.8f; // should be in the player code.
 
 public:
 	// Sets default values for this pawn's properties
